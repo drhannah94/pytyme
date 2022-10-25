@@ -60,12 +60,35 @@
 		              About
 		            </a>
 		          </li>
+		          <li class="nav-item">
+		          	<div class="nav-link">
+		          		<button id="reset-button" type="button" class="btn btn-outline-primary btn-lg">Reset</button>
+		          	</div>
+		          </li>
 		      </div>
 		    </nav>
 
 		    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
 		      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
 		        <h1 class="h2">Dashboard</h1>
+		        <div id="loading">
+		        	<div class="me-2 spinner-grow text-danger" role="status">
+							  <span class="visually-hidden">Loading...</span>
+							</div>
+							<div class="me-2 spinner-grow text-warning" role="status">
+							  <span class="visually-hidden">Loading...</span>
+							</div>
+							<div class="me-2 spinner-grow text-success" role="status">
+							  <span class="visually-hidden">Loading...</span>
+							</div>
+							<div class="me-2 spinner-grow text-info" role="status">
+							  <span class="visually-hidden">Loading...</span>
+							</div>
+							<div class="me-2 spinner-grow text-primary" role="status">
+							  <span class="visually-hidden">Loading...</span>
+							</div>
+		        </div>
+
 		        <div class="btn-toolbar mb-2 mb-md-0">
 		          <div class="btn-group me-2">
 		            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -77,10 +100,6 @@
 		          </button>
 		        </div>
 		      </div>
-
-		      <!-- <canvas class="my-4 w-100 chartjs-render-monitor" id="myChart" width="1075" height="453" style="display: block; width: 1075px; height: 453px;"></canvas> -->
-
-
 
 		      <div id="plot" class="plot">
 		      	{{ js.plot_js|safe }}

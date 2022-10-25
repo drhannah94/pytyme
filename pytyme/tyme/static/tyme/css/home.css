@@ -18,6 +18,6 @@ body {
 
 .plot {
 	display: block;
-	width: 1075px;
+	/*width: 1075px;*/
 	height: 453px;
 }

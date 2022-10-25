@@ -10,7 +10,6 @@ APP_NAME = 'tyme'
 
 def home(request):
 	request.session.flush()
-	# print(request.session)
 	state = State(request.session, APP_NAME)
 
 
@@ -20,20 +19,21 @@ def home(request):
 
 	vs = {
 		'code': {},
-		'width': width,
+		'width': 0,
 		'iterations': 100000,
 	}
 
 	bs = {}
 
 	state.set_state('js', js)
+	state.set_state('vs', vs)
+	state.set_state('bs', bs)
 
 	print(request.session[APP_NAME])
 
 	return render(request, 'home.html', state.get_state())
 
 def compare(request):
-	# print(request.session)
 	state = State(request.session, APP_NAME)
 	if request.method == 'POST':
 		print(f'request.body = {request.body}')

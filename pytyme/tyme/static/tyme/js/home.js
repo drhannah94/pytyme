@@ -1,57 +1,18 @@
-
-
 $(document).ready(function() {
+	$('#loading').hide();
+
 	if (Object.keys(context.code).length > 0) {
 		populateSnippets();
 	} else {
-		codeMirrorInit('py-code-mirror-1', '\n\n\n');
+		codeMirrorInit('py-code-mirror-1');
 	}
 });
 
-function codeMirrorInit(id, val) {
-	var config = {
-		mode: 'python',
-		indentUnit: 4,
-		theme: 'eclipse',
-		lineNumbers: true,
-		lineWrapping: false,
-		indentWithTabs: true,
-		viewportMargin: Infinity,
-	};
-
-	var cm = CodeMirror.fromTextArea($(`#${id}`)[0], config);
-	cm.setSize(null, 110);
-	cm.setValue(val);
-	cm.refresh();
-}
-
 $('#add-snippet').click(function () {
-
 	var snippets = $('.card');
 	var num = snippets.length + 1;
-
-	var html = `
-		<div id="snippet-${num}" class="card mt-3">
-			<div class="card-header">
-				<div class="row">
-					<div class="col">
-						<h3 class="card-tile">Snippet ${num}</h3>
-					</div>
-					<div class="col">
-						<div class="d-flex flex-row-reverse">
-							<button onclick="deleteSnippet(this);" type="button" class="btn btn-danger">Delete</button>
-						</div>
-					</div>
-				</div>
-			<div class="card-body code">
-				<textarea id="py-code-mirror-${num}"></textarea>
-			</div>
-		</div>
-	`
-	$('#code-snippets').append(html);
-	codeMirrorInit(`py-code-mirror-${num}`);
+	addSnippet(num);
 });
-
 
 $('#iterations').change(function () {
 	var position = $(this).val();
@@ -63,8 +24,9 @@ $('#iterations').change(function () {
 	$('#iterations-label').text(`${val} Iterations`);
 });
 
-
 $('#run-snippets').click(function () {
+	$('#loading').show();
+
 	var width = $('#plot').width();
 	let code = {};
 
@@ -87,11 +49,61 @@ $('#run-snippets').click(function () {
 	ajaxPOST('/compare/', data, callback=populateSnippets);
 });
 
+$('#reset-button').click(function () {
+	ajaxPOST('', null);
+})
+
+function codeMirrorInit(id, val=null) {
+	var config = {
+		mode: 'python',
+		indentUnit: 4,
+		theme: 'eclipse',
+		lineNumbers: true,
+		lineWrapping: false,
+		indentWithTabs: true,
+		viewportMargin: Infinity,
+	};
+
+	var cm = CodeMirror.fromTextArea($(`#${id}`)[0], config);
+	cm.setSize(null, 110);
+	if (val) {
+		cm.setValue(val);
+	}
+	cm.refresh();
+}
+
+function addSnippet(num, val=null) {
+	var html = `
+		<div id="snippet-${num}" class="card mt-3">
+			<div class="card-header">
+				<div class="row">
+					<div class="col">
+						<h3 class="card-tile">Snippet ${num}</h3>
+					</div>
+					<div class="col">
+						<div class="d-flex flex-row-reverse">
+							<button onclick="deleteSnippet(this);" type="button" class="btn btn-danger">Delete</button>
+						</div>
+					</div>
+				</div>
+			<div class="card-body code">
+				<textarea id="py-code-mirror-${num}"></textarea>
+			</div>
+		</div>
+	`
+	$('#code-snippets').append(html);
+	codeMirrorInit(`py-code-mirror-${num}`, val);
+}
+
 function populateSnippets() {
 	for (let snip in context.code) {
 		var id = parseInt(snip.split(' ')[1]);
 		console.log('id = ', id)
-		codeMirrorInit(`py-code-mirror-${id}`, context.code[snip]);
+		if (id > 1) {
+			addSnippet(id, context.code[snip]);
+		} else {
+			codeMirrorInit(`py-code-mirror-${id}`, context.code[snip]);
+		}
 	}
 }
 
@@ -131,13 +143,11 @@ function ajaxPOST(dest, data, isPageRefresh=true) {
 				window.location = dest;
 			}
 
-			// if (callback) {
-			// 	console.log('callback');
-			// 	callback();
-			// }
+			$('#loading').hide();
 		},
 		error: function () {
 			console.log('Error!');
+			$('#loading').hide();
 		}
 	})
 }
