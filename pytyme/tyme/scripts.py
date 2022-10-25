@@ -4,18 +4,23 @@ import plotly.graph_objs as go
 def comparison(snakes, width, number=10000):
 	print(snakes)
 
-	times = []
+	if 'Setup' in snakes:
+		setup = snakes['Setup']
+
+	names, times = [], []
 	for key, snake in snakes.items():
-		snake = snake.strip()
-		if isinstance(snake, str) and snake != '':
-			times.append(timeit.timeit(snake, number=number))
+		if key != 'Setup':
+			snake = snake.strip()
+			if isinstance(snake, str) and snake != '':
+				names.append(key)
+				times.append(timeit.timeit(snake, setup=setup, number=number))
 
 	print(f'times = {times}')
 
 	fig = go.Figure(
 		data=[
 			go.Bar(
-				x=list(snakes.keys()),
+				x=names,
 				y=times,
 			)
 		]
@@ -23,7 +28,7 @@ def comparison(snakes, width, number=10000):
 
 	fig.update_layout(
 		height=500,
-		width=width - 275,
+		width=width,
 		title="Time"
 	)
 

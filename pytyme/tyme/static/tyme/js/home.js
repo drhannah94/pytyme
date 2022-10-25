@@ -1,26 +1,27 @@
 $(document).ready(function() {
 	$('#loading').hide();
 
+	var sliderPos = logToSlider(context.iterations);
+	$('#iterations').val(sliderPos);
+	$('#iterations-label').text(`${context.iterations} Iterations`);
+
 	if (Object.keys(context.code).length > 0) {
 		populateSnippets();
 	} else {
+		codeMirrorInit('py-code-mirror-0', '# Add setup here');
 		codeMirrorInit('py-code-mirror-1');
 	}
 });
 
 $('#add-snippet').click(function () {
 	var snippets = $('.card');
-	var num = snippets.length + 1;
+	var num = snippets.length;
 	addSnippet(num);
 });
 
 $('#iterations').change(function () {
 	var position = $(this).val();
-	console.log('position = ', position);
 	var val = sliderToLog(position);
-
-	console.log('val = ', val);
-
 	$('#iterations-label').text(`${val} Iterations`);
 });
 
@@ -97,24 +98,48 @@ function addSnippet(num, val=null) {
 
 function populateSnippets() {
 	for (let snip in context.code) {
-		var id = parseInt(snip.split(' ')[1]);
-		console.log('id = ', id)
-		if (id > 1) {
-			addSnippet(id, context.code[snip]);
+		if (snip.localeCompare('Setup') == 0) {
+			codeMirrorInit(`py-code-mirror-0`, context.code[snip]);
 		} else {
-			codeMirrorInit(`py-code-mirror-${id}`, context.code[snip]);
+			var id = parseInt(snip.split(' ')[1]);
+			if (id > 1) {
+				addSnippet(id, context.code[snip]);
+			} else {
+				codeMirrorInit(`py-code-mirror-${id}`, context.code[snip]);
+			}
 		}
 	}
 }
 
-function sliderToLog(position) {
-	// position will be between 0 and 100
-	var minp = 0;
-	var maxp = 100;
+function scale (number, inMin, inMax, outMin, outMax) {
+    return (number - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
 
+function logToSlider(position) {
+	// The result should be between 100 an 10000000
+	var minp = Math.log(100);
+	var maxp = Math.log(10000000);
+
+	// position will be between 0 and 100
+	var minv = 0;
+	var maxv = 100;
+
+	// calculate adjustment factor
+	var scale = (maxv - minv) / (maxp - minp);
+
+	var pos = Math.log(position);
+
+	return Math.trunc(minv + scale * (pos - minp));
+}
+
+function sliderToLog(position) {
 	// The result should be between 100 an 10000000
 	var minv = Math.log(100);
 	var maxv = Math.log(10000000);
+
+	// position will be between 0 and 100
+	var minp = 0;
+	var maxp = 100;
 
 	// calculate adjustment factor
 	var scale = (maxv - minv) / (maxp - minp);

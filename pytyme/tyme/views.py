@@ -12,7 +12,6 @@ def home(request):
 	request.session.flush()
 	state = State(request.session, APP_NAME)
 
-
 	js = {
 		'plot_js': '',
 	}
@@ -44,12 +43,12 @@ def compare(request):
 		iterations = data['iterations']
 
 		print(f'data = {data}')
-
-		snakes = {
-			'Snippet 1': '"-".join(str(n) for n in range(100))',
-			'Snippet 2': '"-".join([str(n) for n in range(100)])',
-			'Snippet 3': '"-".join(map(str, range(100)))'
-		}
+		
+		# snakes = {
+		# 	'Snippet 1': '"-".join(str(n) for n in range(100))',
+		# 	'Snippet 2': '"-".join([str(n) for n in range(100)])',
+		# 	'Snippet 3': '"-".join(map(str, range(100)))'
+		# }
 
 		plot = comparison(code, width, iterations)
 
@@ -57,7 +56,6 @@ def compare(request):
 		state.set_state(['vs', 'code'], code)
 		state.set_state(['vs', 'width'], width)
 		state.set_state(['vs', 'iterations'], iterations)
-
 
 	return render(request, 'home.html', state.get_state())
 

@@ -120,8 +120,23 @@
 		      	</div>
 		      </div>
 
+		      <div id="setup">
+		        <div id="setup-card" class="card">
+		  				<div class="card-header">
+		  					<div class="row">
+		  						<div class="col">
+			  						<h3 class="card-tile">Setup</h3>
+			  					</div>
+			  				</div>
+		  				</div>
+			  			<div class="card-body code">
+			  				<textarea id="py-code-mirror-0"></textarea>
+			  			</div>
+			  		</div>
+		      </div>
+
 		      <div id="code-snippets">
-		        <div id="snippet-1" class="card">
+		        <div id="snippet-1" class="card mt-3">
 		  				<div class="card-header">
 		  					<div class="row">
 		  						<div class="col">
@@ -145,7 +160,8 @@
 		</div>
 		<script type="text/javascript">
 			var context = {
-				code: {{ vs.code|safe }}
+				code: {{ vs.code|safe }},
+				iterations: {{ vs.iterations }}
 			}
 		</script>
 
